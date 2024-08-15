@@ -1,0 +1,40 @@
+name: Terraform Module Security Check
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        languages: terraform
+        query: security-and-quality.ql
+
+    - name: Upload CodeQL results
+      uses: actions/upload-artifact@v4
+      with:
+        name: codeql-results
+        path: .codeql
+
+    - name: Publish CodeQL annotations
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: .codeql/codeql.sarif
