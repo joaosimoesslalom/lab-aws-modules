@@ -25,8 +25,7 @@ jobs:
     - name: Run CodeQL analysis
       uses: github/codeql-action/analyze@v3
       with:
-        languages: terraform
-        query: security-and-quality.ql
+        query: ./security-and-quality.ql
 
     - name: Upload CodeQL results
       uses: actions/upload-artifact@v4
